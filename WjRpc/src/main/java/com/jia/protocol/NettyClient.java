@@ -1,5 +1,7 @@
 package com.jia.protocol;
 import com.jia.common.Invocation;
+import com.jia.common.KryoDecoder;
+import com.jia.common.KryoEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -18,8 +20,8 @@ public class NettyClient {
                     .handler(new ChannelInitializer<Channel>() {
                         @Override
                         public void initChannel(Channel ch) throws Exception {
-                            ch.pipeline().addLast(new KryoCode.KryoDecoder()); // 解码器
-                            ch.pipeline().addLast(new KryoCode.KryoEncoder()); // 编码器
+                            ch.pipeline().addLast(new KryoDecoder()); // 解码器
+                            ch.pipeline().addLast(new KryoEncoder()); // 编码器
                             ch.pipeline().addLast(new NettyClientHandler());
                         }
                     });

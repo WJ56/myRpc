@@ -46,6 +46,7 @@ public class NacosRegister {
         List<Instance> instances = null;
         try {
             System.out.println(interfaceName);
+            // 服务发现
             instances = namingService.selectInstances(interfaceName, true);
         } catch (NacosException e) {
             throw new RuntimeException(e);
@@ -54,8 +55,10 @@ public class NacosRegister {
         // 可以根据需要，实现自己的负载均衡算法选择一个实例
         // 这里我们简单地取第一个实例
         if (!instances.isEmpty()) {
+            System.out.println("发现服务: "+instances);
+            // 负载均衡
+
             Instance instance = instances.get(0); // 或使用负载均衡策略选择一个实例
-            System.out.println("发现服务：" + instance.getIp() + ":" + instance.getPort());
             return instance;
             // 此时你可以使用该实例的 IP 和端口进行 RPC 调用
         } else {

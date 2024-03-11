@@ -6,6 +6,9 @@ public class Invocation {
     private Class[] parameterTypes;
     private Object[] parameters;
 
+    public Invocation() {
+    }
+
     public Invocation(String interfaceName, String methodName, Class[] parameterTypes, Object[] parameters) {
         this.interfaceName = interfaceName;
         this.methodName = methodName;
