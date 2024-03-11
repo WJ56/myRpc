@@ -1,8 +1,10 @@
 package com.jia.proxy;
 
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.jia.Serializer.JsonSerializer;
 import com.jia.common.Invocation;
 import com.jia.protocol.NettyClient;
+import com.jia.register.NacosRegister;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -16,11 +18,10 @@ public class ProxyFactory {
 
                 Invocation invocation = new Invocation(interfaceClass.getName(), method.getName(),
                         method.getParameterTypes(), args);
-                JsonSerializer jsonSerializer = new JsonSerializer();
-                byte[] serialize = jsonSerializer.serialize(invocation);
                 NettyClient nettyClient = new NettyClient();
                 try {
-                    nettyClient.send("localhost",8080, serialize);
+                    Instance instance = NacosRegister.get(interfaceClass.getName());
+                    nettyClient.send(instance.getIp(),instance.getPort(), invocation);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

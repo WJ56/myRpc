@@ -13,12 +13,8 @@ public class DispatcherServlet extends ChannelInboundHandlerAdapter {
         // 当接收到客户端的消息时被调用
         System.out.println("Server received: " + msg);
 
-        Serializer serializer = SerializationManager.getSerializer(SerializationType.JSON);
-        Invocation invocation =  serializer.deserialize((byte[]) msg, Invocation.class);
-
-        String name = invocation.getInterfaceName();
         // TODO: if name
-        new NettyServerHandler().handler(ctx, invocation);
+        new NettyServerHandler().handler(ctx, (Invocation) msg);
     }
 
     @Override

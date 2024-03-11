@@ -22,8 +22,8 @@ public class NettyServer {
                     .childHandler(new ChannelInitializer<Channel>() { // 设置ChannelInitializer，对新连接的Channel进行初始化
                         @Override
                         protected void initChannel(Channel ch) throws Exception {
-                            ch.pipeline().addLast(new StringDecoder()); // 解码器
-                            ch.pipeline().addLast(new StringEncoder()); // 编码器
+                            ch.pipeline().addLast(new KryoCode.KryoDecoder()); // 解码器
+                            ch.pipeline().addLast(new KryoCode.KryoEncoder()); // 编码器
                             ch.pipeline().addLast(new DispatcherServlet()); // 自定义的处理器
                         }
                     });

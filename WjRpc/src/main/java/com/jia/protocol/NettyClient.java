@@ -1,15 +1,14 @@
 package com.jia.protocol;
+import com.jia.common.Invocation;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 
 import java.util.Arrays;
 
 public class NettyClient {
-    public void send(String hostname, Integer port, byte[] serialize) throws Exception {
+    public void send(String hostname, Integer port, Invocation invocation) throws Exception {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         try {
@@ -19,8 +18,8 @@ public class NettyClient {
                     .handler(new ChannelInitializer<Channel>() {
                         @Override
                         public void initChannel(Channel ch) throws Exception {
-                            ch.pipeline().addLast(new StringDecoder());
-                            ch.pipeline().addLast(new StringEncoder());
+                            ch.pipeline().addLast(new KryoCode.KryoDecoder()); // 解码器
+                            ch.pipeline().addLast(new KryoCode.KryoEncoder()); // 编码器
                             ch.pipeline().addLast(new NettyClientHandler());
                         }
                     });
@@ -29,10 +28,10 @@ public class NettyClient {
             ChannelFuture f = b.connect(hostname, port).sync();
 
             // 发送消息到服务器
-            f.channel().writeAndFlush(serialize);
+            f.channel().writeAndFlush(invocation);
 
             // 当接收到客户端的消息时被调用
-            System.out.println("Client sent: " + Arrays.toString(serialize));
+            System.out.println("Client sent: " + invocation);
 
             // 等待连接被关闭
             f.channel().closeFuture().sync();
